@@ -69,7 +69,7 @@ def build_vagrantfile(os_name, os_version, package_name):
     with open('Vagrantfile', 'w') as f:
         f.write(vagrantfile_content)
 
-#Build the Dockerfile
+
 if __name__ == '__main__':
     # Prompt user to enter CVE
     cve_id = input("Enter CVE ID: ")
