@@ -4,14 +4,14 @@ import sys
 import os
 import re
 
-
+#This function is used to get the CVE details from the NVD API
 def get_cve_details(cve_id):
     api_url = f"https://services.nvd.nist.gov/rest/json/cve/1.0/{cve_id}"
     response = requests.get(api_url)
     response_dict = json.loads(response.content)
     return response_dict['result']
 
-
+#This function is used to get the vulnerable versions of the affected operating systems from the CVE details
 def get_vulnerable_versions(cve_id):
     cve_details = get_cve_details(cve_id)
     vulnerable_versions = {}
@@ -42,7 +42,7 @@ def get_vulnerable_versions(cve_id):
                             vulnerable_versions[vendor_name] = {product_name: [version_range]}
     return vulnerable_versions
 
-
+#This function is used to select the OS version to build
 def select_os_version(os_versions):
     os_list = list(os_versions.keys())
     for i, os_name in enumerate(os_list):
@@ -56,7 +56,7 @@ def select_os_version(os_versions):
     selected_version = os_versions_list[version_index-1]
     return selected_os, selected_version
 
-
+#This function is used to build the Vagrantfile
 def build_vagrantfile(os_name, os_version, package_name):
     vagrantfile_content = f'''Vagrant.configure("2") {{
   config.vm.box = "generic/{os_name}{os_version}"
@@ -69,7 +69,7 @@ def build_vagrantfile(os_name, os_version, package_name):
     with open('Vagrantfile', 'w') as f:
         f.write(vagrantfile_content)
 
-
+#Build the Dockerfile
 if __name__ == '__main__':
     # Prompt user to enter CVE
     cve_id = input("Enter CVE ID: ")
